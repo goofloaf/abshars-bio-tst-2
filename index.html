@@ -1,142 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Goofy Lufy – Cyber Sorcerer</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abshar Athulam Punathil – Cyber Swipe Bio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
 
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: #0a0a0a;
-      color: white;
-      overflow-x: hidden;
-    }
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    font-family: 'Poppins', sans-serif; background: black; color: #0f0;
+  }
 
-    /* Smooth animations */
-    * {
-      transition: 0.4s ease;
-    }
+  /* Canvas for code rain */
+  #codeRain {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
 
-    header {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      background: linear-gradient(135deg, #0d0d0d, #111, #000);
-      background-size: 300% 300%;
-      animation: bgShift 10s infinite alternate;
-      text-align: center;
-    }
+  /* Container with horizontal panels */
+  .container {
+    display: flex;
+    width: 300vw; /* 3 panels */
+    height: 100vh;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    z-index: 1;
+    position: relative;
+  }
 
-    @keyframes bgShift {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
-    }
+  .container::-webkit-scrollbar { display: none; }
 
-    h1 {
-      font-size: 4rem;
-      font-weight: 800;
-      letter-spacing: 3px;
-      text-shadow: 0 0 20px #0af;
-      animation: fadeDown 1.2s ease;
-    }
+  .panel {
+    flex: 0 0 100vw;
+    height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 50px;
+    box-sizing: border-box;
+    backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.5);
+    border-left: 2px solid #0f0;
+    border-right: 2px solid #0f0;
+    text-align: center;
+    color: #0f0;
+    position: relative;
+  }
 
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  h1, h2 {
+    text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+    margin: 10px 0;
+  }
 
-    .tagline {
-      font-size: 1.6rem;
-      margin-top: -10px;
-      opacity: 0.7;
-      animation: fadeUp 1.6s ease;
-    }
+  h1 { font-size: 3rem; animation: slideInFromTop 1s ease; }
+  h2 { font-size: 2rem; margin-bottom: 20px; animation: slideInFromBottom 1s ease; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  p, ul { font-size: 1.2rem; max-width: 600px; text-align: center; opacity: 0; animation: fadeIn 1s forwards; animation-delay: 0.5s; }
+  ul { list-style: none; padding: 0; }
+  ul li { margin: 10px 0; }
 
-    section {
-      padding: 80px 10%;
-    }
+  @keyframes slideInFromTop { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideInFromBottom { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { to { opacity: 1; } }
 
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 40px;
-      margin: 30px 0;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 30px rgba(0, 200, 255, 0.2);
-      transform: translateY(50px);
-      opacity: 0;
-      animation: slideUp 1s forwards;
-    }
+  /* Navigation dots */
+  .nav-dots {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 15px; z-index: 2;
+  }
 
-    @keyframes slideUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #0f0; opacity: 0.4; transition: 0.3s; cursor: pointer;
+  }
 
-    .card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 40px rgba(0, 200, 255, 0.4);
-    }
+  .dot.active { opacity: 1; box-shadow: 0 0 10px #0f0; }
 
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #999;
-      font-size: 0.9rem;
-    }
+  /* Particle icons inside panels */
+  .particle {
+    position: absolute;
+    font-size: 1.2rem;
+    color: #0f0;
+    opacity: 0.6;
+    animation: float 5s infinite ease-in-out alternate;
+  }
 
-  </style>
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+    50% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+    100% { transform: translateY(0px) translateX(-10px); opacity: 0.6; }
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Goofy Lufy</h1>
-    <p class="tagline">Cyber Sorcerer • Ethical Hacker • Full‑Stack Crafter</p>
-  </header>
 
-  <section>
-    <div class="card">
-      <h2>💻 Who Am I?</h2>
-      <p>
-        I am Goofy Lufy, a self‑taught ethical hacker and coding wizard who began exploring
-        networks before I even knew how to spell "algorithm". From breaking my own Wi‑Fi at age 12
-        just to see if I could fix it again, to building sleek digital experiences, I do it all with style.
-      </p>
-    </div>
+<canvas id="codeRain"></canvas>
 
-    <div class="card">
-      <h2>⚡ My Skills</h2>
-      <ul>
-        <li>Advanced Ethical Hacking (Network Analysis, Vulnerability Detection)</li>
-        <li>Full‑Stack Web Development (HTML, CSS, JS, React, Node)</li>
-        <li>Python Automation + Script Crafting</li>
-        <li>Penetration Testing & Security Auditing</li>
-        <li>Reverse Engineering (Beginner Level but learning fast)</li>
-      </ul>
-    </div>
+<div class="container" id="container">
+  <div class="panel" id="panel1">
+    <h1>Abshar Athulam Punathil</h1>
+    <h2>Who Am I?</h2>
+    <p>I am a self-taught ethical hacker and coding wizard, exploring networks and crafting sleek digital experiences with style.</p>
+    <div class="particle" style="top:10%; left:20%;">💻</div>
+    <div class="particle" style="top:30%; left:80%;">🖥️</div>
+    <div class="particle" style="top:60%; left:40%;">🔒</div>
+  </div>
 
-    <div class="card">
-      <h2>🎯 My Mission</h2>
-      <p>
-        To blend creativity with cybersecurity — building systems that look beautiful, work flawlessly,
-        and stay unbreakable. I believe hacking isn't about destruction… it's about understanding.
-      </p>
-    </div>
-  </section>
+  <div class="panel" id="panel2">
+    <h2>My Skills</h2>
+    <ul>
+      <li>Advanced Ethical Hacking</li>
+      <li>Full-Stack Web Development</li>
+      <li>Python Automation</li>
+      <li>Penetration Testing</li>
+      <li>Reverse Engineering</li>
+    </ul>
+    <div class="particle" style="top:20%; left:10%;">🛡️</div>
+    <div class="particle" style="top:50%; left:70%;">⚡</div>
+    <div class="particle" style="top:80%; left:30%;">💾</div>
+  </div>
 
-  <footer>
-    © 2025 Goofy Lufy — Crafted with Code & Chaos
-  </footer>
+  <div class="panel" id="panel3">
+    <h2>My Mission</h2>
+    <p>To blend creativity with cybersecurity — building systems that look beautiful, work flawlessly, and stay unbreakable.</p>
+    <div class="particle" style="top:15%; left:50%;">🚀</div>
+    <div class="particle" style="top:60%; left:20%;">🌐</div>
+    <div class="particle" style="top:75%; left:80%;">🧩</div>
+  </div>
+</div>
+
+<div class="nav-dots">
+  <div class="dot active" data-index="0"></div>
+  <div class="dot" data-index="1"></div>
+  <div class="dot" data-index="2"></div>
+</div>
+
+<script>
+  // Navigation dots
+  const container = document.getElementById('container');
+  const dots = document.querySelectorAll('.dot');
+
+  container.addEventListener('scroll', () => {
+    const index = Math.round(container.scrollLeft / window.innerWidth);
+    dots.forEach(dot => dot.classList.remove('active'));
+    dots[index].classList.add('active');
+  });
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const index = dot.getAttribute('data-index');
+      container.scrollTo({ left: index * window.innerWidth, behavior: 'smooth' });
+    });
+  });
+
+  // Matrix code rain
+  const canvas = document.getElementById('codeRain');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%';
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = Array.from({length: columns}, () => Math.random() * canvas.height);
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+
+    for(let i = 0; i < drops.length; i++){
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, i * fontSize, drops[i]);
+      drops[i] += fontSize;
+      if(drops[i] > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    }
+  }
+
+  setInterval(draw, 35);
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+</script>
+
 </body>
 </html>
