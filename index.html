@@ -3,97 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Abshar Athulam Punathil – Cyber Swipe Bio</title>
+<title>Abshar Athulam Punathil – Cyber Portfolio</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
 
   html, body {
-    margin: 0; padding: 0; height: 100%; overflow: hidden;
-    font-family: 'Poppins', sans-serif; background: black; color: #0f0;
+    margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
+    background: black; color: #0f0; overflow-x: hidden;
   }
 
-  /* Code rain background */
+  /* Code rain canvas */
   #codeRain {
-    position: fixed;
-    top: 0; left: 0;
+    position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 0;
   }
 
-  /* Swipe container */
-  .container {
-    display: flex;
-    width: 300vw; /* 3 panels */
-    height: 100vh;
-    overflow: hidden; /* hide scrollbars */
-    z-index: 1;
+  /* Content container */
+  .content {
     position: relative;
-    touch-action: pan-y;
-    cursor: grab;
-    transition: transform 0.4s ease;
+    z-index: 1;
+    padding: 50px 20px;
+    max-width: 900px;
+    margin: 0 auto;
   }
 
-  .panel {
-    flex: 0 0 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  section {
+    margin: 100px 0;
     padding: 50px;
-    box-sizing: border-box;
+    background: rgba(0,0,0,0.6);
+    border-left: 4px solid #0f0;
+    border-right: 4px solid #0f0;
     backdrop-filter: blur(5px);
-    background: rgba(0,0,0,0.5);
-    border-left: 2px solid #0f0;
-    border-right: 2px solid #0f0;
+  }
+
+  /* Name styling with dark green outline */
+  h1 {
     text-align: center;
+    font-size: 3rem;
     color: #0f0;
-    scroll-snap-align: start;
+    text-shadow:
+      0 0 2px #003300,
+      0 0 5px #003300,
+      0 0 10px #0f0,
+      0 0 20px #0f0,
+      0 0 30px #0f0;
+    margin-bottom: 20px;
   }
 
-  h1, h2 {
+  h2 {
+    text-align: center;
+    font-size: 2rem;
     text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
-    margin: 10px 0;
+    margin-bottom: 20px;
   }
 
-  h1 { font-size: 3rem; animation: slideInFromTop 1s ease; }
-  h2 { font-size: 2rem; margin-bottom: 20px; animation: slideInFromBottom 1s ease; }
+  p, ul {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #0f0;
+  }
 
-  p, ul { font-size: 1.2rem; max-width: 600px; text-align: center; opacity: 0; animation: fadeIn 1s forwards; animation-delay: 0.5s; }
   ul { list-style: none; padding: 0; }
   ul li { margin: 10px 0; }
 
-  @keyframes slideInFromTop { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes slideInFromBottom { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeIn { to { opacity: 1; } }
-
-  /* Navigation dots */
-  .nav-dots {
-    position: fixed; bottom: 20px; left: 50%;
-    transform: translateX(-50%);
-    display: flex; gap: 15px; z-index: 2;
-  }
-
-  .dot {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: #0f0; opacity: 0.4; transition: 0.3s; cursor: pointer;
-  }
-
-  .dot.active { opacity: 1; box-shadow: 0 0 10px #0f0; }
+  /* Section scroll animation */
+  section { opacity: 0; transform: translateY(50px); transition: 1s ease; }
+  section.visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
 
 <canvas id="codeRain"></canvas>
 
-<div class="container" id="container">
-  <div class="panel">
+<div class="content">
+  <section id="bio">
     <h1>Abshar Athulam Punathil</h1>
     <h2>Who Am I?</h2>
-    <p>I am a self-taught ethical hacker and coding wizard, exploring networks and crafting sleek digital experiences with style.</p>
-  </div>
+    <p>I am a self-taught ethical hacker and coding wizard, exploring networks and crafting sleek digital experiences with style. My goal is to make technology both secure and visually striking.</p>
+  </section>
 
-  <div class="panel">
+  <section id="skills">
     <h2>My Skills</h2>
     <ul>
       <li>Advanced Ethical Hacking</li>
@@ -102,78 +92,28 @@
       <li>Penetration Testing</li>
       <li>Reverse Engineering</li>
     </ul>
-  </div>
+  </section>
 
-  <div class="panel">
+  <section id="mission">
     <h2>My Mission</h2>
     <p>To blend creativity with cybersecurity — building systems that look beautiful, work flawlessly, and stay unbreakable.</p>
-  </div>
-</div>
-
-<div class="nav-dots">
-  <div class="dot active" data-index="0"></div>
-  <div class="dot" data-index="1"></div>
-  <div class="dot" data-index="2"></div>
+  </section>
 </div>
 
 <script>
-  // Swipe functionality
-  const container = document.getElementById('container');
-  let currentIndex = 0;
-  let startX = 0;
-  let isDragging = false;
-  let translateX = 0;
-
-  container.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.clientX;
-    container.style.cursor = 'grabbing';
-  });
-  container.addEventListener('touchstart', (e) => {
-    isDragging = true;
-    startX = e.touches[0].clientX;
-  });
-
-  const dragEnd = (endX) => {
-    isDragging = false;
-    container.style.cursor = 'grab';
-    const diff = startX - endX;
-    if (diff > 50 && currentIndex < 2) currentIndex++; // swipe left
-    if (diff < -50 && currentIndex > 0) currentIndex--; // swipe right
-    container.style.transform = `translateX(-${currentIndex * window.innerWidth}px)`;
-    updateDots();
-  };
-
-  container.addEventListener('mouseup', e => dragEnd(e.clientX));
-  container.addEventListener('mouseleave', e => isDragging && dragEnd(e.clientX));
-  container.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX));
-
-  container.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    const moveX = e.clientX - startX;
-    container.style.transform = `translateX(${-currentIndex * window.innerWidth + -moveX}px)`;
-  });
-
-  container.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    const moveX = e.touches[0].clientX - startX;
-    container.style.transform = `translateX(${-currentIndex * window.innerWidth + -moveX}px)`;
-  });
-
-  // Navigation dots
-  const dots = document.querySelectorAll('.dot');
-  const updateDots = () => {
-    dots.forEach(dot => dot.classList.remove('active'));
-    dots[currentIndex].classList.add('active');
-  };
-
-  dots.forEach(dot => {
-    dot.addEventListener('click', () => {
-      currentIndex = dot.getAttribute('data-index');
-      container.style.transform = `translateX(-${currentIndex * window.innerWidth}px)`;
-      updateDots();
+  // Scroll reveal animation
+  const sections = document.querySelectorAll('section');
+  const revealSections = () => {
+    const triggerBottom = window.innerHeight * 0.85;
+    sections.forEach(section => {
+      const sectionTop = section.getBoundingClientRect().top;
+      if (sectionTop < triggerBottom) {
+        section.classList.add('visible');
+      }
     });
-  });
+  };
+  window.addEventListener('scroll', revealSections);
+  revealSections();
 
   // Matrix code rain
   const canvas = document.getElementById('codeRain');
@@ -191,7 +131,6 @@
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#0f0';
     ctx.font = fontSize + 'px monospace';
-
     for(let i = 0; i < drops.length; i++){
       const text = letters[Math.floor(Math.random() * letters.length)];
       ctx.fillText(text, i * fontSize, drops[i]);
@@ -199,9 +138,8 @@
       if(drops[i] > canvas.height && Math.random() > 0.975) drops[i] = 0;
     }
   }
-
   setInterval(draw, 35);
-  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; container.style.transform = `translateX(-${currentIndex * window.innerWidth}px)`; });
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 </script>
 
 </body>
